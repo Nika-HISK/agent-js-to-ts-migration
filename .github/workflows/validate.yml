@@ -1,0 +1,58 @@
+name: Validate Skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required files exist
+        run: |
+          test -f SKILL.md || (echo "Missing SKILL.md" && exit 1)
+          test -f AGENTS.md || (echo "Missing AGENTS.md" && exit 1)
+          test -f metadata.json || (echo "Missing metadata.json" && exit 1)
+          test -f .claude-plugin/plugin.json || (echo "Missing .claude-plugin/plugin.json" && exit 1)
+          echo "All required files present."
+
+      - name: Validate plugin.json
+        run: |
+          node -e "
+            const p = JSON.parse(require('fs').readFileSync('.claude-plugin/plugin.json', 'utf8'));
+            if (!p.name) throw new Error('plugin.json missing name');
+            if (!p.description) throw new Error('plugin.json missing description');
+            if (!p.version) throw new Error('plugin.json missing version');
+            console.log('plugin.json valid:', p.name, p.version);
+          "
+
+      - name: Check rule files have correct format
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const files = fs.readdirSync('rules').filter(f => f.endsWith('.md') && !f.startsWith('_'));
+            let errors = 0;
+            for (const file of files) {
+              const content = fs.readFileSync(path.join('rules', file), 'utf8');
+              if (!content.startsWith('---')) {
+                console.error('Missing frontmatter:', file);
+                errors++;
+              }
+              if (!content.includes('**Impact:')) {
+                console.error('Missing Impact field:', file);
+                errors++;
+              }
+            }
+            if (errors > 0) process.exit(1);
+            console.log('All', files.length, 'rule files valid.');
+          "
+
+      - name: Count rules
+        run: |
+          RULE_COUNT=$(ls rules/*.md | grep -v "^rules/_" | wc -l)
+          echo "Rule count: $RULE_COUNT"

@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0",
+  "organization": "JS to TypeScript Migration",
+  "date": "June 2026",
+  "abstract": "Comprehensive migration guide for converting JavaScript codebases to TypeScript, designed for AI agents and LLMs. Contains 34 rules across 10 categories, prioritized by impact from critical (setup, type annotations) to incremental (third-party types, generics). Each rule includes detailed explanations, real-world before/after code examples comparing JavaScript vs TypeScript, and specific impact metrics to guide automated refactoring and code generation.",
+  "references": [
+    "https://www.typescriptlang.org/docs/",
+    "https://www.typescriptlang.org/tsconfig",
+    "https://typescript-eslint.io/",
+    "https://github.com/microsoft/TypeScript",
+    "https://www.totaltypescript.com/",
+    "https://github.com/type-challenges/type-challenges"
+  ]
+}

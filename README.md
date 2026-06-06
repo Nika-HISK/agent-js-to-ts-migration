@@ -18,7 +18,7 @@ Drop it into your project and your AI agent will follow battle-tested migration 
 ## Installation
 
 ```bash
-npx skills add yourusername/agent-js-to-ts-migration
+npx skills add Nika-HISK/agent-js-to-ts-migration
 ```
 
 Then invoke it in Claude Code:
